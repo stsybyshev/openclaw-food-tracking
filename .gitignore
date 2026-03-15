@@ -1,0 +1,11 @@
+# Environment and secrets
+.env
+.env.*
+*.key
+
+# Test results (generated, not committed)
+test/results/
+
+# OS files
+.DS_Store
+Thumbs.db
