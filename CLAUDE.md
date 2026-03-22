@@ -98,10 +98,10 @@ The generated skill should support:
 One file per month, flat markdown table, no day headings — optimised for agent parsing. The agent creates a new file on the first entry of each month and appends rows thereafter.
 
 Fields per row:
-- `datetime` — `YYYY-MM-DD HH:MM` (24h, sortable)
+- `datetime` — `DD-MM-YYYY HH:MM` (24h)
 - `food` — name and brief description
 - `qty` — numeric quantity
-- `unit` — serving unit (`egg`, `cup`, `g`, `kg`, `tsp`, `tbsp`, `serving`, `slice`, etc.)
+- `unit` — serving unit (`egg`, `cup`, `100g`, `g`, `kg`, `tsp`, `tbsp`, `serving`, `slice`, etc.). Prefer `100g` over `g` when macro values come from a nutrition label (most labels list per 100g); `qty` then becomes the number of 100g portions consumed (e.g. 250g eaten → qty=2.5, unit=100g).
 - `protein_unit` — grams of protein per unit
 - `fat_unit` — grams of fat per unit
 - `carbs_unit` — grams of carbs per unit
@@ -117,13 +117,23 @@ Daily/weekly/monthly aggregation: agent sums `*_total` columns filtering by date
 
 Template: `dist/openclaw-food-tracker/assets/monthly-template.md`
 
+### Personal foods cache (`personal-foods.yaml`)
+
+YAML file, agent-writable. Checked **first** on every food tracking request. Stores the user's recurring meals, home-cooked dishes, and local cafe items. Starts empty; the skill appends entries when the user confirms a recurring meal.
+
+Fields per entry: `name`, `aliases`, `qty_default`, `unit`, `kcal_per_unit`, `protein_per_unit`, `fat_per_unit`, `carbs_per_unit`, `notes`, `source` (always `learned`).
+
+Mutability rules: only append after explicit user confirmation; update existing entry if alias matches rather than duplicating.
+
+File: `dist/openclaw-food-tracker/references/personal-foods.yaml`
+
 ### Popular foods cache (`popular-foods.yaml`)
 
-YAML file, agent-writable. Queried on every food tracking request (cache hit = faster, more consistent). Ships with ~20 seed entries; the skill appends learned entries when users confirm recurring meals.
+YAML file, **read-only at runtime** (seed data only). Checked **second**, after personal-foods.yaml. Ships with ~50 pescatarian-friendly seed entries for consistency — ensures common foods always produce the same calorie/macro values regardless of model variance.
 
-Fields per entry: `name`, `aliases`, `qty_default`, `unit`, `kcal_per_unit`, `protein_per_unit`, `fat_per_unit`, `carbs_per_unit`, `notes`, `source` (`seed` | `learned`).
+Fields per entry: `name`, `aliases`, `qty_default`, `unit`, `kcal_per_unit`, `protein_per_unit`, `fat_per_unit`, `carbs_per_unit`, `notes`, `source` (always `seed`).
 
-Mutability rules: only append after explicit user confirmation; mark new entries `source: learned`; update existing entry if alias matches rather than duplicating.
+The skill MUST NOT write learned entries to this file. All user-confirmed foods go to `personal-foods.yaml`.
 
 File: `dist/openclaw-food-tracker/references/popular-foods.yaml`
 

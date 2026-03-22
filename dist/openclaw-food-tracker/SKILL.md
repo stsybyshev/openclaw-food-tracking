@@ -17,14 +17,15 @@ Log food intake, estimate calories and macros, and produce summaries. All data i
 | [photo of nutrition label] | Label extraction → log | `YYYY-MM.md` (append) |
 | "what did I eat today?" | Daily summary | `YYYY-MM.md` (read) |
 | "weekly summary" | Aggregate summary | `YYYY-MM.md` (read) |
-| "save eggs benedict for future" | Learn food | `popular-foods.yaml` (append) |
+| "save eggs benedict for future" | Learn food | `personal-foods.yaml` (append) |
 
 ## File Locations
 
 All files are stored relative to the agent's workspace directory:
 
 - **Monthly logs:** `food-tracker/YYYY-MM.md` (one file per calendar month)
-- **Food cache:** `{baseDir}/references/popular-foods.yaml`
+- **Personal food cache:** `{baseDir}/references/personal-foods.yaml` (your learned foods — checked first)
+- **Popular food cache:** `{baseDir}/references/popular-foods.yaml` (seed staples — checked second)
 - **Template:** `{baseDir}/assets/monthly-template.md`
 
 ## Step 1: Recognise Intent
@@ -35,7 +36,7 @@ Classify the user message into exactly one category:
 |---|---|---|
 | **LOG_FOOD** | "had", "ate", "just eaten", "for breakfast/lunch/dinner", "grabbed a", "my usual" | → proceed to Step 2 |
 | **LOG_FOOD_PHOTO** | Image attachment + food context (meal, plate, dish, restaurant) | → proceed to Step 4 |
-| **LOG_FOOD_LABEL** | Image attachment + nutrition label visible (barcode, "Nutrition Facts", per-100g table) | → proceed to Step 5 |
+| **LOG_FOOD_LABEL** | Image attachment + nutrition label visible (barcode, "Nutrition Facts", per-100g table), or user manually provides per-100g values | → proceed to Step 5 |
 | **SUMMARY** | "what did I eat", "today's calories", "weekly summary", "how much protein" | → proceed to Step 6 |
 | **LEARN_FOOD** | "save this", "remember this", "add to favourites", "for future reuse" | → proceed to Step 7 |
 | **NOT_FOOD_TRACKING** | Recipe requests, cooking advice, restaurant recommendations, general food chat | → Do NOT activate this skill. Respond normally. |
@@ -46,8 +47,8 @@ CRITICAL: If unsure whether the message is food logging or general conversation,
 
 For each food item mentioned in the user message:
 
-1. Read `{baseDir}/references/popular-foods.yaml`
-2. For each food mentioned, check if the food name or any alias matches (case-insensitive, partial match OK)
+1. Read `{baseDir}/references/personal-foods.yaml` first, then `{baseDir}/references/popular-foods.yaml`
+2. For each food mentioned, check if the food name or any alias matches (case-insensitive, partial match OK). A personal-foods match takes priority over a popular-foods match.
 3. If match found:
    - Use `kcal_per_unit`, `protein_per_unit`, `fat_per_unit`, `carbs_per_unit` from the cache entry
    - If user specified a quantity, use it. Otherwise use `qty_default` from the cache entry
@@ -55,6 +56,7 @@ For each food item mentioned in the user message:
    - Proceed to Step 3
 4. If no match found:
    - Estimate nutrition from your general knowledge
+   - If you know the per-100g values (common for packaged foods), use `unit` = `100g` and set `qty` to portions of 100g consumed. This avoids division and keeps per-unit columns human-readable.
    - Set `source` = `text_estimate`
    - Set `confidence` between `0.4` and `0.7` based on how common/well-known the food is
    - Proceed to Step 3
@@ -69,25 +71,27 @@ User says "pad thai" → no cache match → estimate from general knowledge → 
 
 ## Step 3: Append to Monthly Log
 
-1. Determine the current date and time (use message timestamp if available, otherwise current time)
+1. Determine the current date and time (use message timestamp if available, otherwise current time). Format datetime as `DD-MM-YYYY HH:MM` (24h).
 2. Determine the file path: `food-tracker/YYYY-MM.md` where YYYY-MM matches the current month
-3. If the file does not exist, create it using this exact template:
+3. If the file does not exist, create it using this exact template (replace the heading with the full month name and year, e.g. "March 2026", "August 2025"):
 
 ```markdown
-# Food Log — YYYY-MM
+# Food Log — March 2026
 
-| datetime | food | qty | unit | protein_unit | fat_unit | carbs_unit | kcal_unit | protein_total | fat_total | carbs_total | kcal_total | source | confidence |
-|----------|------|-----|------|--------------|----------|------------|-----------|---------------|-----------|-------------|------------|--------|------------|
+| Datetime         | Food                   | Qty | Unit    | Protein/u | Fat/u | Carbs/u | Kcal/u | Protein | Fat   | Carbs | Kcal  | Source       | Confidence |
+|:-----------------|:-----------------------|----:|:--------|----------:|------:|--------:|-------:|--------:|------:|------:|------:|:-------------|:-----------|
 ```
 
-4. Append one row per food item to the end of the table. Compute totals as: `*_total = qty × *_per_unit`
+Pad each cell with spaces so columns stay aligned when viewed as raw markdown. Match the column widths shown above.
+
+4. Append one row per food item to the end of the table. Compute totals as: `*_total = qty × *_per_unit`. Capitalise the first letter of the food name (e.g. "Scrambled eggs", "Black coffee").
 
 ### Example row
 
 For "3 scrambled eggs" resolved from cache (egg: 72 kcal, 6.3g protein, 4.8g fat, 0.4g carbs per egg):
 
 ```
-| 2026-03-15 08:30 | scrambled eggs | 3 | egg | 6.3 | 4.8 | 0.4 | 72 | 18.9 | 14.4 | 1.2 | 216 | cache_lookup | 0.95 |
+| 15-03-2026 08:30 | Scrambled eggs         |   3 | egg     |       6.3 |   4.8 |     0.4 |     72 |    18.9 |  14.4 |   1.2 |   216 | cache_lookup | 0.95       |
 ```
 
 5. After appending, respond to the user with:
@@ -131,12 +135,11 @@ When the user attaches a photo containing a nutrition label:
 2. Ask the user (or infer from context) how much they consumed:
    - "How many servings did you have?" or "What was the total weight?"
    - If the user already specified (e.g. "had half the pack, 200g total"), use that
-3. Calculate per-unit and total values for the log entry. When `unit` is `g`:
-   - `kcal_unit` = label kcal per 100g ÷ 100 (i.e. kcal per 1 gram)
-   - `protein_unit` = label protein per 100g ÷ 100
-   - `fat_unit` = label fat per 100g ÷ 100
-   - `carbs_unit` = label carbs per 100g ÷ 100
-   - `*_total` = qty × `*_unit`
+3. Calculate per-unit and total values for the log entry:
+   - Use `unit` = `100g`
+   - Copy the label's per-100g values directly into `kcal_unit`, `protein_unit`, `fat_unit`, `carbs_unit` — no division required
+   - Set `qty` = total grams consumed ÷ 100 (e.g. 600g → qty = 6, 250g → qty = 2.5)
+   - Compute `*_total` = qty × `*_unit`
 4. Set `source` = `photo_label`, `confidence` = `0.85` (labels are reliable, portion estimate may vary)
 5. Log using Step 3
 6. In your response, show the extracted label data and the computed entry
@@ -145,11 +148,11 @@ When the user attaches a photo containing a nutrition label:
 
 Label says: 55 kcal per 100g, 1.0g protein, 2.8g fat, 5.9g carbs. User ate 600g.
 
-```
-| 2026-03-15 12:30 | tomato soup with cream | 600 | g | 1.0 | 2.8 | 5.9 | 55 | 6.0 | 16.8 | 35.4 | 330 | photo_label | 0.85 |
-```
+→ `unit` = `100g`, `qty` = 6 (600 ÷ 100), per-unit values copied straight from label:
 
-IMPORTANT: When the label gives values per 100g, store the per-100g values directly in the `*_unit` columns (not per-1g). Set `qty` to the number of 100g units consumed. Example: 600g consumed → `qty` = 6, `unit` = `100g`, `kcal_unit` = 55 → `kcal_total` = 330. This keeps the per-unit columns human-readable.
+```
+| 15-03-2026 12:30 | Tomato soup with cream |   6 | 100g    |       1.0 |   2.8 |     5.9 |     55 |     6.0 |  16.8 |  35.4 |   330 | photo_label  | 0.85       |
+```
 
 ## Step 6: Summaries
 
@@ -168,7 +171,10 @@ When the user asks for a summary:
 > - Calories: 1,245 kcal
 > - Protein: 68g | Fat: 42g | Carbs: 156g
 
-For weekly/monthly summaries, also show daily averages.
+For weekly/monthly summaries, also show daily averages. Calculate daily average as:
+- Denominator = number of **distinct dates that have at least one log entry** (including FASTING markers)
+- Days with no entries at all are **excluded** from the denominator (assumed untracked, not fasted)
+- This means fasting days (with a FASTING marker) correctly pull the average down, while missed tracking days do not
 
 CRITICAL: Summaries are read-only. Do NOT append any new rows to the log file when producing a summary.
 
@@ -178,7 +184,7 @@ When the user explicitly asks to save a food for future reuse:
 
 1. Confirm with the user: what name, typical quantity, and unit to use
 2. Determine nutrition values from the most recent log entry for that food, or ask the user
-3. Append a new entry to `{baseDir}/references/popular-foods.yaml`:
+3. Append a new entry to `{baseDir}/references/personal-foods.yaml`:
 
 ```yaml
 - name: eggs benedict
@@ -195,8 +201,9 @@ When the user explicitly asks to save a food for future reuse:
 
 4. CRITICAL rules:
    - Only save after explicit user confirmation — never save speculatively
-   - If an alias already matches an existing entry in the file, update that entry instead of creating a duplicate
-   - Always set `source: learned` to distinguish from seed data
+   - Always write to `personal-foods.yaml` — never modify `popular-foods.yaml`
+   - If an alias already matches an existing entry in personal-foods.yaml, update that entry instead of creating a duplicate
+   - Always set `source: learned`
 5. Confirm to the user:
 
 > Saved "eggs benedict" to your food cache. Next time just say "had eggs benny" and I'll log it automatically.
@@ -222,6 +229,14 @@ Beer, wine, spirits: the `kcal_per_unit` includes alcohol calories which are NOT
 ### Corrections
 
 If the user says "that's wrong" or "I actually had 2, not 3" → append a new corrected row with the correct values. Do NOT delete or modify existing rows. The log is append-only.
+
+### Fasting days
+
+If the user says "I'm fasting today", "fasting day", "water fast", or similar → log a single FASTING marker row for that date with all macros and kcal = 0. Do NOT log water, tea, or black coffee separately on fasting days (they are ~0 kcal and the marker already covers the day). The FASTING marker ensures the day is counted in average calculations as a 0-calorie day rather than being skipped as an untracked day.
+
+```
+| 20-03-2026 08:00 | FASTING                |   1 | day     |       0.0 |   0.0 |     0.0 |      0 |     0.0 |   0.0 |   0.0 |     0 | cache_lookup | 1.0        |
+```
 
 ### Time in the past
 

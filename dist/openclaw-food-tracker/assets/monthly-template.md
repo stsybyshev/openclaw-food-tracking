@@ -1,4 +1,4 @@
-# Food Log — YYYY-MM
+# Food Log — March 2026
 
-| datetime | food | qty | unit | protein_unit | fat_unit | carbs_unit | kcal_unit | protein_total | fat_total | carbs_total | kcal_total | source | confidence |
-|----------|------|-----|------|--------------|----------|------------|-----------|---------------|-----------|-------------|------------|--------|------------|
+| Datetime         | Food                   | Qty | Unit    | Protein/u | Fat/u | Carbs/u | Kcal/u | Protein | Fat   | Carbs | Kcal  | Source       | Confidence |
+|:-----------------|:-----------------------|----:|:--------|----------:|------:|--------:|-------:|--------:|------:|------:|------:|:-------------|:-----------|

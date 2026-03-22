@@ -13,19 +13,19 @@
 
 <!-- CLEAN VERSION (no commentary) goes to dist/openclaw-food-tracker/assets/monthly-template.md -->
 
-# Food Log — YYYY-MM
+# Food Log — March 2026
 
-| datetime | food | qty | unit | protein_unit | fat_unit | carbs_unit | kcal_unit | protein_total | fat_total | carbs_total | kcal_total | source | confidence |
-|----------|------|-----|------|--------------|----------|------------|-----------|---------------|-----------|-------------|------------|--------|------------|
-| 2026-03-15 08:30 | scrambled eggs | 3 | egg | 6.0 | 5.0 | 0.5 | 70 | 18.0 | 15.0 | 1.5 | 210 | cache_lookup | 0.95 |
-| 2026-03-15 08:30 | black coffee | 1 | cup | 0.0 | 0.0 | 0.0 | 2 | 0.0 | 0.0 | 0.0 | 2 | cache_lookup | 0.99 |
-| 2026-03-15 13:00 | pasta with tomato sauce | 1 | serving | 12.0 | 5.0 | 70.0 | 380 | 12.0 | 5.0 | 70.0 | 380 | text_estimate | 0.55 |
+| Datetime         | Food                   | Qty | Unit    | Protein/u | Fat/u | Carbs/u | Kcal/u | Protein | Fat   | Carbs | Kcal  | Source       | Confidence |
+|:-----------------|:-----------------------|----:|:--------|----------:|------:|--------:|-------:|--------:|------:|------:|------:|:-------------|:-----------|
+| 15-03-2026 08:30 | Scrambled eggs         |   3 | egg     |       6.0 |   5.0 |     0.5 |     70 |    18.0 |  15.0 |   1.5 |   210 | cache_lookup | 0.95       |
+| 15-03-2026 08:30 | Black coffee           |   1 | cup     |       0.0 |   0.0 |     0.0 |      2 |     0.0 |   0.0 |   0.0 |     2 | cache_lookup | 0.99       |
+| 15-03-2026 13:00 | Pasta with tomato sauce|   1 | serving |      12.0 |   5.0 |    70.0 |    380 |    12.0 |   5.0 |  70.0 |   380 | text_estimate| 0.55       |
 
 <!-- Field reference:
-     datetime        — YYYY-MM-DD HH:MM (24h, from message timestamp or user statement)
-     food            — name and brief description
-     qty             — numeric quantity
-     unit            — serving unit (egg, cup, g, kg, tsp, tbsp, serving, slice, etc.)
+     Datetime        — DD-MM-YYYY HH:MM (24h, from message timestamp or user statement)
+     Food            — name and brief description, capitalised first letter
+     Qty             — numeric quantity
+     Unit            — serving unit (egg, cup, 100g, g, kg, tsp, tbsp, serving, slice, etc.)
      protein_unit    — grams of protein per unit
      fat_unit        — grams of fat per unit
      carbs_unit      — grams of carbs per unit

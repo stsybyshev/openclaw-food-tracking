@@ -24,6 +24,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE = os.path.dirname(SCRIPT_DIR)
 
 SKILL_PATH = os.path.join(BASE, "dist/openclaw-food-tracker/SKILL.md")
+PERSONAL_CACHE_PATH = os.path.join(BASE, "dist/openclaw-food-tracker/references/personal-foods.yaml")
 CACHE_PATH = os.path.join(BASE, "dist/openclaw-food-tracker/references/popular-foods.yaml")
 CASES_DIR = os.path.join(BASE, "test/cases")
 RESULTS_DIR = os.path.join(BASE, "test/results")
@@ -33,6 +34,7 @@ RESULTS_DIR = os.path.join(BASE, "test/results")
 API_KEY = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("ANTHROPIC_API_KEY", "")
 MODEL = os.environ.get("MODEL", "claude-haiku-4-5-20251001")
 ABLATION = os.environ.get("ABLATION", "0") == "1"
+DELAY = float(os.environ.get("DELAY", "20"))  # seconds between API calls (rate limit safety)
 
 # ── Colours ───────────────────────────────────────────────────────────────────
 
@@ -59,6 +61,8 @@ def load_skill_system_prompt():
 
     with open(SKILL_PATH) as f:
         skill_md = f.read()
+    with open(PERSONAL_CACHE_PATH) as f:
+        personal_yaml = f.read()
     with open(CACHE_PATH) as f:
         foods_yaml = f.read()
 
@@ -68,6 +72,12 @@ def load_skill_system_prompt():
 
 ## Available Files (pre-loaded)
 
+### Contents of {baseDir}/references/personal-foods.yaml:
+
+```yaml
+""" + personal_yaml + """
+```
+
 ### Contents of {baseDir}/references/popular-foods.yaml:
 
 ```yaml
@@ -76,12 +86,14 @@ def load_skill_system_prompt():
 
 ### Contents of food-tracker/2026-03.md:
 
-# Food Log — 2026-03
+# Food Log — March 2026
 
-| datetime | food | qty | unit | protein_unit | fat_unit | carbs_unit | kcal_unit | protein_total | fat_total | carbs_total | kcal_total | source | confidence |
-|----------|------|-----|------|--------------|----------|------------|-----------|---------------|-----------|-------------|------------|--------|------------|
-| 2026-03-15 08:30 | scrambled eggs | 3 | egg | 6.3 | 4.8 | 0.4 | 72 | 18.9 | 14.4 | 1.2 | 216 | cache_lookup | 0.95 |
-| 2026-03-15 08:30 | black coffee | 1 | cup | 0.3 | 0.0 | 0.0 | 2 | 0.3 | 0.0 | 0.0 | 2 | cache_lookup | 0.99 |
+| Datetime         | Food                   | Qty | Unit    | Protein/u | Fat/u | Carbs/u | Kcal/u | Protein | Fat   | Carbs | Kcal  | Source       | Confidence |
+|:-----------------|:-----------------------|----:|:--------|----------:|------:|--------:|-------:|--------:|------:|------:|------:|:-------------|:-----------|
+| 13-03-2026 08:00 | FASTING                |   1 | day     |       0.0 |   0.0 |     0.0 |      0 |     0.0 |   0.0 |   0.0 |     0 | cache_lookup | 1.0        |
+| 14-03-2026 12:00 | Salmon traybake        |   1 | serving |      62.0 |  55.0 |    52.0 |   1014 |    62.0 |  55.0 |  52.0 |  1014 | cache_lookup | 0.95       |
+| 15-03-2026 08:30 | Scrambled eggs         |   3 | egg     |       6.3 |   4.8 |     0.4 |     72 |    18.9 |  14.4 |   1.2 |   216 | cache_lookup | 0.95       |
+| 15-03-2026 08:30 | Black coffee           |   1 | cup     |       0.3 |   0.0 |     0.0 |      2 |     0.3 |   0.0 |   0.0 |     2 | cache_lookup | 0.99       |
 
 ### Current date and time: 2026-03-15 13:00
 """
@@ -109,7 +121,10 @@ def call_api(system_prompt, user_message):
     """Call Claude API and return (response_text, metadata)."""
     payload = {"model": MODEL, "max_tokens": 1024, "messages": [{"role": "user", "content": user_message}]}
     if system_prompt:
-        payload["system"] = system_prompt
+        # Use structured system content with cache_control for prompt caching
+        payload["system"] = [
+            {"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral"}}
+        ]
 
     result = subprocess.run(
         ["curl", "-s", "https://api.anthropic.com/v1/messages",
@@ -122,10 +137,13 @@ def call_api(system_prompt, user_message):
     resp = json.loads(result.stdout)
     if "content" in resp and len(resp["content"]) > 0:
         text = resp["content"][0]["text"]
+        usage = resp.get("usage", {})
         meta = {
             "model": resp.get("model", "?"),
-            "input_tokens": resp.get("usage", {}).get("input_tokens", 0),
-            "output_tokens": resp.get("usage", {}).get("output_tokens", 0),
+            "input_tokens": usage.get("input_tokens", 0),
+            "output_tokens": usage.get("output_tokens", 0),
+            "cache_creation_input_tokens": usage.get("cache_creation_input_tokens", 0),
+            "cache_read_input_tokens": usage.get("cache_read_input_tokens", 0),
         }
         return text, meta
     else:
@@ -171,6 +189,8 @@ def main():
 
     total_input = 0
     total_output = 0
+    total_cache_create = 0
+    total_cache_read = 0
     results = {"pass": 0, "fail": 0, "skip": 0}
 
     # ── With skill ────────────────────────────────────────────────────────
@@ -178,7 +198,9 @@ def main():
     for case_file in cases:
         name, status, text, meta = run_case(os.path.join(CASES_DIR, case_file), system_with_skill)
         color = {"pass": GREEN, "fail": RED, "skip": YELLOW}[status]
-        tokens = f"({meta.get('input_tokens', 0)}+{meta.get('output_tokens', 0)} tok)" if meta else ""
+        cache_hit = meta.get("cache_read_input_tokens", 0)
+        cache_info = f" ⚡cached" if cache_hit > 0 else ""
+        tokens = f"({meta.get('input_tokens', 0)}+{meta.get('output_tokens', 0)} tok{cache_info})" if meta else ""
         print(f"  {color}{status.upper():4s}{NC}  {name}  {tokens}")
         if status == "pass":
             preview = text.split("\n")[0][:100]
@@ -186,10 +208,12 @@ def main():
         results[status] += 1
         total_input += meta.get("input_tokens", 0)
         total_output += meta.get("output_tokens", 0)
+        total_cache_create += meta.get("cache_creation_input_tokens", 0)
+        total_cache_read += meta.get("cache_read_input_tokens", 0)
 
         with open(os.path.join(RESULTS_DIR, f"{name}-skill.md"), "w") as f:
             f.write(text)
-        time.sleep(0.5)
+        time.sleep(DELAY)
 
     # ── Ablation (without skill) ──────────────────────────────────────────
     if ABLATION:
@@ -205,20 +229,33 @@ def main():
                 print(f"        {CYAN}→ {preview}{NC}")
             total_input += meta.get("input_tokens", 0)
             total_output += meta.get("output_tokens", 0)
+            total_cache_create += meta.get("cache_creation_input_tokens", 0)
+            total_cache_read += meta.get("cache_read_input_tokens", 0)
 
             with open(os.path.join(RESULTS_DIR, f"{name}-bare.md"), "w") as f:
                 f.write(text)
-            time.sleep(0.5)
+            time.sleep(DELAY)
 
     # ── Summary ───────────────────────────────────────────────────────────
     inp_price, out_price = PRICING.get(MODEL, (0.80, 4.00))
-    cost = total_input / 1e6 * inp_price + total_output / 1e6 * out_price
+    # Cached reads cost 10% of input price; cache writes cost 25% more than input price
+    # total_input from API = non-cached input tokens only (excludes cache_read and cache_create)
+    cost = (total_input / 1e6 * inp_price
+            + total_cache_create / 1e6 * inp_price * 1.25
+            + total_cache_read / 1e6 * inp_price * 0.1
+            + total_output / 1e6 * out_price)
+    all_input = total_input + total_cache_create + total_cache_read
+    cost_without_cache = all_input / 1e6 * inp_price + total_output / 1e6 * out_price
 
     print()
     print("── Results ─────────────────────────────────────────────────────────────")
     print(f"  {GREEN}PASS: {results['pass']}{NC}  {RED}FAIL: {results['fail']}{NC}  {YELLOW}SKIP: {results['skip']}{NC}")
     print(f"  Tokens: {total_input:,} input + {total_output:,} output")
-    print(f"  Estimated cost: ${cost:.4f} ({cost*100:.2f} cents)")
+    if total_cache_read > 0 or total_cache_create > 0:
+        print(f"  Cache:  {total_cache_create:,} written + {total_cache_read:,} read")
+        print(f"  Estimated cost: ${cost:.4f} ({cost*100:.2f} cents) — saved ~${cost_without_cache - cost:.4f} via caching")
+    else:
+        print(f"  Estimated cost: ${cost:.4f} ({cost*100:.2f} cents)")
     print(f"  Results saved to: test/results/")
     print()
 
