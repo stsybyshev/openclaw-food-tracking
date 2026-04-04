@@ -12,32 +12,26 @@ Log food intake, estimate calories and macros, and produce summaries. All data i
 | User intent | Operation | Files touched |
 |---|---|---|
 | "had 3 eggs and coffee" | Log food entry | `YYYY-MM.md` (append) |
-| "had my usual breakfast" | Cache lookup → log | `popular-foods.yaml` (read) → `YYYY-MM.md` (append) |
+| "had my usual breakfast" | Cache lookup → log | `lookup_food` tool → `YYYY-MM.md` (append) |
 | [photo of meal] + "lunch!" | Photo estimate → log | `YYYY-MM.md` (append) |
 | [photo of nutrition label] | Label extraction → log | `YYYY-MM.md` (append) |
 | "what did I eat today?" | Daily summary | `YYYY-MM.md` (read) |
 | "weekly summary" | Aggregate summary | `YYYY-MM.md` (read) |
-| "save eggs benedict for future" | Learn food | `personal-foods.yaml` (append) |
+| "save eggs benedict for future" | Learn food | `add_personal_food` tool |
 
-## File Locations
+## File Locations and Tools
 
-There are two directories. Do NOT confuse them:
+**Food caches** are managed via MCP tools — do NOT read or write YAML files directly:
+- `lookup_food(query)` — searches personal foods first, then seed database. Returns matching entries with nutrition info.
+- `add_personal_food(...)` — saves a new food to the personal cache. Append-only, rejects duplicates.
 
-1. **Skill directory** (READ-ONLY — never write here, never create files here):
-   `skills/openclaw-food-tracker/`
-   - `references/popular-foods.yaml` — seed food database (read-only, never modify)
-   - `references/personal-foods.yaml` — initial personal foods (read-only copy)
-   - `assets/monthly-template.md` — template for new month files (read-only)
+**Monthly food logs** are stored in the workspace:
+- `food-tracker/YYYY-MM.md` — monthly food logs (append-only, one file per month)
 
-2. **Workspace directory** (READ-WRITE — this is where you read and write user data):
-   - `food-tracker/YYYY-MM.md` — monthly food logs (append-only, one file per month)
-   - `food-tracker/personal-foods.yaml` — user's learned foods (read-write, checked FIRST before the seed database)
-
-When logging food, ALWAYS:
-- Read `food-tracker/personal-foods.yaml` first (workspace — user's learned foods)
-- Then read `skills/openclaw-food-tracker/references/popular-foods.yaml` (skill dir — seed database)
-- Write new entries ONLY to files in `food-tracker/` (workspace)
-- NEVER write to or create files in `skills/` or `references/`
+When logging food:
+- Call `lookup_food(query)` for each food item (do NOT read YAML files directly)
+- Write new log entries ONLY to `food-tracker/YYYY-MM.md` files
+- To save a new food, call `add_personal_food(...)` (do NOT write to YAML files directly)
 
 ## Step 1: Recognise Intent
 
@@ -58,14 +52,13 @@ CRITICAL: If unsure whether the message is food logging or general conversation,
 
 For each food item mentioned in the user message:
 
-1. Read `food-tracker/personal-foods.yaml` first (workspace), then `skills/openclaw-food-tracker/references/popular-foods.yaml` (skill dir, read-only)
-2. For each food mentioned, check if the food name or any alias matches (case-insensitive, partial match OK). A personal-foods match takes priority over a popular-foods match.
-3. If match found:
-   - Use `kcal_per_unit`, `protein_per_unit`, `fat_per_unit`, `carbs_per_unit` from the cache entry
-   - If user specified a quantity, use it. Otherwise use `qty_default` from the cache entry
+1. Call `lookup_food(query)` for each food item. The tool searches the user's personal foods first, then the seed database. It returns matching entries with all nutrition fields.
+2. If match found (non-empty result):
+   - Use `kcal_per_unit`, `protein_per_unit`, `fat_per_unit`, `carbs_per_unit` from the result
+   - If user specified a quantity, use it. Otherwise use `qty_default` from the result
    - Set `source` = `cache_lookup`, `confidence` = `0.95`
    - Proceed to Step 3
-4. If no match found:
+3. If no match found (empty result):
    - Estimate nutrition from your general knowledge
    - If you know the per-100g values (common for packaged foods), use `unit` = `100g` and set `qty` to portions of 100g consumed. This avoids division and keeps per-unit columns human-readable.
    - Set `source` = `text_estimate`
@@ -74,11 +67,11 @@ For each food item mentioned in the user message:
 
 ### Cache lookup examples
 
-User says "3 scrambled eggs" → match `egg` (alias: "scrambled eggs") → qty=3, unit=egg, kcal_per_unit=72 → kcal_total=216
+User says "3 scrambled eggs" → `lookup_food("scrambled eggs")` → match found → qty=3, unit=egg, kcal_per_unit=72 → kcal_total=216
 
-User says "a banana" → match `banana` → qty=1 (qty_default), unit=banana, kcal_per_unit=105 → kcal_total=105
+User says "a banana" → `lookup_food("banana")` → match found → qty=1 (qty_default), unit=banana, kcal_per_unit=105 → kcal_total=105
 
-User says "pad thai" → no cache match → estimate from general knowledge → source=text_estimate, confidence=0.5
+User says "pad thai" → `lookup_food("pad thai")` → empty result → estimate from general knowledge → source=text_estimate, confidence=0.5
 
 ## Step 3: Append to Monthly Log
 
@@ -195,26 +188,26 @@ When the user explicitly asks to save a food for future reuse:
 
 1. Confirm with the user: what name, typical quantity, and unit to use
 2. Determine nutrition values from the most recent log entry for that food, or ask the user
-3. Append a new entry to `food-tracker/personal-foods.yaml` (in the workspace, NOT in the skill directory):
+3. Call `add_personal_food` with the food details:
 
-```yaml
-- name: eggs benedict
-  aliases: [eggs benny, benny]
-  qty_default: 1
-  unit: serving
-  kcal_per_unit: 290
-  protein_per_unit: 17.0
-  fat_per_unit: 18.0
-  carbs_per_unit: 15.0
-  notes: "learned from user on 2026-03-15"
-  source: learned
+```
+add_personal_food(
+  name="eggs benedict",
+  aliases=["eggs benny", "benny"],
+  qty_default=1,
+  unit="serving",
+  kcal_per_unit=290,
+  protein_per_unit=17.0,
+  fat_per_unit=18.0,
+  carbs_per_unit=15.0,
+  notes="learned from user on 2026-03-15"
+)
 ```
 
 4. CRITICAL rules:
    - Only save after explicit user confirmation — never save speculatively
-   - Always write to `food-tracker/personal-foods.yaml` (workspace) — never modify `popular-foods.yaml` in the skill directory
-   - If an alias already matches an existing entry in personal-foods.yaml, update that entry instead of creating a duplicate
-   - Always set `source: learned`
+   - The tool automatically rejects duplicates if the name or alias already exists
+   - Do NOT read or write YAML files directly — always use the `add_personal_food` tool
 5. Confirm to the user:
 
 > Saved "eggs benedict" to your food cache. Next time just say "had eggs benny" and I'll log it automatically.

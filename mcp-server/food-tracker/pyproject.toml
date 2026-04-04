@@ -1,0 +1,14 @@
+[project]
+name = "food-cache-mcp"
+version = "0.1.0"
+description = "MCP server for food cache lookup and management"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/stan/.openclaw/**)",
+      "Read(//home/stan/.openclaw/workspace/skills/openclaw-food-tracker/**)",
+      "Read(//home/stan/.openclaw/workspace/skills/openclaw-food-tracker/assets/**)",
+      "Read(//home/stan/.openclaw/workspace/references/**)",
+      "Read(//home/stan/.openclaw/workspace/**)",
+      "Bash(python3 -m json.tool)",
+      "Bash(wc -l /home/stan/.openclaw/workspace/skills/openclaw-food-tracker/references/*.yaml)",
+      "Bash(python3)",
+      "Bash(python3 -c \"import sys,json; [print\\(json.dumps\\(json.loads\\(l\\), indent=2\\)[:500]\\) for l in sys.stdin]\")",
+      "Bash(python3 -c ':*)"
+    ],
+    "additionalDirectories": [
+      "/home/stan/.openclaw/workspace/food-tracker"
+    ]
+  }
+}
