@@ -1,6 +1,6 @@
 """Shared parser for monthly food log markdown files.
 
-Used by update-monthly-summary.py and generate-dashboard.py.
+Used by update-monthly-summary.py, generate-dashboard.py, and dashboard/generate.py.
 """
 
 from collections import defaultdict
@@ -12,6 +12,14 @@ COL_PROTEIN_TOTAL = 9
 COL_FAT_TOTAL = 10
 COL_CARBS_TOTAL = 11
 COL_KCAL_TOTAL = 12
+
+
+def _safe_float(s):
+    """Parse a numeric string, stripping leading '<' (e.g. '<0.5' → 0.5)."""
+    s = s.strip()
+    if s.startswith("<"):
+        s = s[1:]
+    return float(s)
 
 
 def parse_log(filepath):
@@ -105,3 +113,79 @@ def compute_monthly_stats(daily):
         "lowest": lowest,
         "lowest_date": lowest_date[:5],
     }
+
+
+def _ddmmyyyy_to_iso(date_str):
+    """Convert DD-MM-YYYY to YYYY-MM-DD."""
+    parts = date_str.split("-")
+    return f"{parts[2]}-{parts[1]}-{parts[0]}"
+
+
+def parse_log_rich(filepath):
+    """Parse a monthly food log, return list of per-meal dicts with time and dish name.
+
+    Each dict: {"date_iso", "time", "food", "protein", "fat", "carbs", "kcal", "is_fasting"}
+    """
+    entries = []
+    in_table = False
+    with open(filepath) as f:
+        for line in f:
+            stripped = line.strip()
+            if stripped.startswith("| Datetime"):
+                in_table = True
+                continue
+            if in_table and stripped.startswith("|:--"):
+                continue
+            if in_table and stripped.startswith("|"):
+                cols = [c.strip() for c in stripped.split("|")]
+                if len(cols) < 13:
+                    continue
+                try:
+                    dt_raw = cols[COL_DATETIME]
+                    date_str = dt_raw[:10]  # DD-MM-YYYY
+                    time_str = dt_raw[11:16] if len(dt_raw) >= 16 else "00:00"
+                    food = cols[COL_FOOD]
+                    protein = _safe_float(cols[COL_PROTEIN_TOTAL])
+                    fat = _safe_float(cols[COL_FAT_TOTAL])
+                    carbs = _safe_float(cols[COL_CARBS_TOTAL])
+                    kcal = _safe_float(cols[COL_KCAL_TOTAL])
+                    is_fasting = "FASTING" in food.upper()
+                    entries.append({
+                        "date_iso": _ddmmyyyy_to_iso(date_str),
+                        "time": time_str,
+                        "food": food,
+                        "protein": protein,
+                        "fat": fat,
+                        "carbs": carbs,
+                        "kcal": kcal,
+                        "is_fasting": is_fasting,
+                    })
+                except (ValueError, IndexError):
+                    continue
+            elif in_table and not stripped.startswith("|"):
+                break
+    return entries
+
+
+def group_by_date_rich(entries):
+    """Group rich entries by ISO date, preserving individual meals and computing totals."""
+    days = defaultdict(lambda: {"date": None, "meals": [], "totals": {"protein": 0, "fat": 0, "carbs": 0, "kcal": 0}, "is_fasting": False})
+    for e in entries:
+        d = e["date_iso"]
+        day = days[d]
+        day["date"] = d
+        day["meals"].append({
+            "time": e["time"],
+            "food": e["food"],
+            "protein": e["protein"],
+            "fat": e["fat"],
+            "carbs": e["carbs"],
+            "kcal": e["kcal"],
+        })
+        day["totals"]["protein"] += e["protein"]
+        day["totals"]["fat"] += e["fat"]
+        day["totals"]["carbs"] += e["carbs"]
+        day["totals"]["kcal"] += e["kcal"]
+        if e["is_fasting"]:
+            day["is_fasting"] = True
+    return dict(days)

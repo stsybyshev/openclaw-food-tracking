@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantified Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17; --card: #111827; --border: #1e293b; --muted: #475569;
+  --dim: #64748b; --text: #94a3b8; --bright: #f1f5f9; --accent: #8b5cf6;
+  --header-bg: #0a0e17; --tab-active: #1e293b;
+}
+.light {
+  --bg: #e8ecf2; --card: #f0f2f7; --border: #d0d6e0; --muted: #8892a4;
+  --dim: #5f6b7e; --text: #3d4758; --bright: #151b28; --accent: #6366f1;
+  --header-bg: #edf0f5; --tab-active: #d8dde8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--bright); transition: background 0.3s, color 0.3s; -webkit-font-smoothing: antialiased; }
+.header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--header-bg); z-index: 20; transition: background 0.3s; }
+.logo { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #4338ca, #3730a3, #1e3a5f); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(99,102,241,0.3); padding: 3px; }
+.theme-btn { background: var(--tab-active); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--dim); font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.2s; }
+.content { padding: 20px; max-width: 1100px; margin: 0 auto; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 18px; transition: background 0.3s; }
+.card.full { grid-column: 1 / -1; }
+.card-title { font-size: 13px; font-weight: 700; font-family: 'Sora', sans-serif; color: var(--bright); letter-spacing: -0.01em; }
+.card-badge { font-size: 8px; font-family: 'DM Mono', monospace; color: var(--muted); padding: 2px 6px; border-radius: 4px; background: color-mix(in srgb, var(--border) 60%, transparent); }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.bar-track { height: 4px; border-radius: 4px; background: var(--border); }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+.summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; transition: background 0.3s; }
+.summary-label { font-size: 10px; color: var(--dim); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.summary-value { font-size: 26px; font-weight: 700; color: var(--bright); font-family: 'Sora', sans-serif; }
+.summary-unit { font-size: 12px; color: var(--dim); font-weight: 500; margin-left: 4px; }
+.summary-trend { margin-top: 5px; font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 600; }
+.trend-up { color: #f97316; }
+.trend-down { color: #22c55e; }
+.footer { padding: 20px; border-top: 1px solid var(--border); text-align: center; font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); margin-top: 40px; }
+.insight-row { display: flex; gap: 10px; padding: 10px 0; }
+.insight-row + .insight-row { border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr; }
+  .card.full { grid-column: 1; }
+  .summary-row { grid-template-columns: repeat(2, 1fr); }
+  .header { padding: 12px 14px; }
+  .content { padding: 14px 12px; }
+  .summary-value { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo">
+      <svg viewBox="0 0 64 40" width="22" height="14" style="margin-top:2px">
+        <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5eead4"/><stop offset="50%" stop-color="#93c5fd"/><stop offset="100%" stop-color="#e0e7ff"/></linearGradient></defs>
+        <path d="M4 36 A28 28 0 0 1 60 36" fill="none" stroke="#fff" stroke-width="3" opacity="0.18" stroke-linecap="round"/>
+        <path d="M4 36 A28 28 0 0 1 54.2 16" fill="none" stroke="url(#gg)" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="4" y1="36" x2="8" y2="36" stroke="#fff" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+        <line x1="32" y1="8" x2="32" y2="12" stroke="#fff" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+        <line x1="60" y1="36" x2="56" y2="36" stroke="#fff" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+        <line x1="32" y1="36" x2="50" y2="16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="32" cy="36" r="3" fill="#fff"/><circle cx="32" cy="36" r="1.5" fill="#4338ca"/>
+      </svg>
+    </div>
+    <div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:15px;letter-spacing:-0.02em;line-height:1.1">Quantified Life</div>
+      <div style="font-size:9px;color:var(--accent);font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.04em">1 skill active</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span id="updated-ago" style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted)">Updated …</span>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀︎ <span style="font-size:10px">Light</span></button>
+  </div>
+</div>
+
+<div class="content">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <span style="font-size:22px">🍱</span>
+    <div>
+      <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--bright)">Nutrition</div>
+      <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--muted)">8 widgets · skill/nutrition-tracker</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: SUMMARY CARDS -->
+  <div class="summary-row" id="summary-cards"></div>
+
+  <!-- ROW 2: HEATMAP -->
+  <div class="card full" style="margin-bottom:14px">
+    <div class="card-header"><span class="card-title">Daily Calorie Heatmap — 2026</span><span class="card-badge">chart</span></div>
+    <div id="heatmap"></div>
+  </div>
+
+  <div class="grid">
+    <!-- ROW 3: TODAY'S MACROS -->
+    <div class="card full">
+      <div class="card-header"><span class="card-title">Today's Macros</span><span class="card-badge">card</span></div>
+      <div id="macros"></div>
+    </div>
+
+    <!-- ROW 4: TODAY'S LOG (full width) -->
+    <div class="card full">
+      <div class="card-header"><span class="card-title">Today's Log</span><span class="card-badge">table</span></div>
+      <div id="todays-log"></div>
+    </div>
+
+    <!-- ROW 5: MEAL TIMING + MACRO COMPOSITION -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Meal Timing — This Month</span><span class="card-badge">chart</span></div>
+      <div id="meal-timing"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Macro Composition</span><span class="card-badge">chart</span></div>
+      <div id="macro-comp"></div>
+    </div>
+
+    <!-- ROW 6: INSIGHTS -->
+    <div class="card full">
+      <div class="card-header"><span class="card-title">Monthly Insights — April</span><span class="card-badge">card</span></div>
+      <div id="insights"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Powered by <span style="color:var(--accent);font-weight:600">Veda</span> · 1 skill · Precomputed by generate.py</div>
+
+<script>
+// ── BEGIN GENERATED DATA ──
+const DATA = {"skill_id": "nutrition", "generated_at": "2026-04-07T06:04:35Z", "data_range": {"first_log": "2026-03-01", "last_log": "2026-04-06", "total_days_logged": 36}, "config": {"body_weight_kg": 90, "calories_target": 2500, "protein_target_g": 144, "fat_target_g": 78, "carbs_target_g": 295, "protein_per_kg_target": 1.6, "macro_split_target": {"protein": 25, "fat": 28, "carbs": 47}, "heatmap": {"fasting_max": 0, "low_max": 2000, "normal_max": 2500, "elevated_max": 3000}, "meal_timing": {"timeline_start": 6, "timeline_end": 22, "morning_end": 11, "midday_end": 15}}, "widgets": {"summary_cards": {"period": "2026-04", "prev_period": "2026-03", "cards": [{"label": "Avg Daily Calories", "value": 2634, "display": "2,634", "unit": "kcal", "delta_pct": -2.8, "delta_display": "\u22122.8%", "trend_up": false}, {"label": "Avg Protein", "value": 134, "display": "134", "unit": "g/day", "delta_pct": 11.4, "delta_display": "+11.4%", "trend_up": true}, {"label": "Avg Fat", "value": 107, "display": "107", "unit": "g/day", "delta_pct": -18.3, "delta_display": "\u221218.3%", "trend_up": false}, {"label": "Avg Carbs", "value": 266, "display": "266", "unit": "g/day", "delta_pct": 29.9, "delta_display": "+29.9%", "trend_up": true}]}, "yearly_heatmap": {"year": 2026, "months": [{"name": "Jan", "days_in_month": 31, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Feb", "days_in_month": 28, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Mar", "days_in_month": 31, "has_data": true, "avg_kcal": 2708, "fasting_days": 1, "over_3000_days": 7, "days": [{"day": 1, "kcal": 2780}, {"day": 2, "kcal": 2903}, {"day": 3, "kcal": 2786}, {"day": 4, "kcal": 2454}, {"day": 5, "kcal": 2563}, {"day": 6, "kcal": 2214}, {"day": 7, "kcal": 2373}, {"day": 8, "kcal": 2476}, {"day": 9, "kcal": 3039}, {"day": 10, "kcal": 2256}, {"day": 11, "kcal": 2901}, {"day": 12, "kcal": 2848}, {"day": 13, "kcal": 2847}, {"day": 14, "kcal": 2982}, {"day": 15, "kcal": 3481}, {"day": 16, "kcal": 3205}, {"day": 17, "kcal": 3500}, {"day": 18, "kcal": null}, {"day": 19, "kcal": 2915}, {"day": 20, "kcal": 2853}, {"day": 21, "kcal": 3755}, {"day": 22, "kcal": 2008}, {"day": 23, "kcal": 2804}, {"day": 24, "kcal": 2869}, {"day": 25, "kcal": 3081}, {"day": 26, "kcal": 2985}, {"day": 27, "kcal": 2261}, {"day": 28, "kcal": 3421}, {"day": 29, "kcal": 0}, {"day": 30, "kcal": 2255}, {"day": 31, "kcal": 2436}]}, {"name": "Apr", "days_in_month": 30, "has_data": true, "avg_kcal": 2634, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": 2754}, {"day": 2, "kcal": 2601}, {"day": 3, "kcal": 2590}, {"day": 4, "kcal": 2993}, {"day": 5, "kcal": 2712}, {"day": 6, "kcal": 2151}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "May", "days_in_month": 31, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Jun", "days_in_month": 30, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Jul", "days_in_month": 31, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Aug", "days_in_month": 31, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Sep", "days_in_month": 30, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Oct", "days_in_month": 31, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Nov", "days_in_month": 30, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}, {"name": "Dec", "days_in_month": 31, "has_data": false, "avg_kcal": 0, "fasting_days": 0, "over_3000_days": 0, "days": [{"day": 1, "kcal": null}, {"day": 2, "kcal": null}, {"day": 3, "kcal": null}, {"day": 4, "kcal": null}, {"day": 5, "kcal": null}, {"day": 6, "kcal": null}, {"day": 7, "kcal": null}, {"day": 8, "kcal": null}, {"day": 9, "kcal": null}, {"day": 10, "kcal": null}, {"day": 11, "kcal": null}, {"day": 12, "kcal": null}, {"day": 13, "kcal": null}, {"day": 14, "kcal": null}, {"day": 15, "kcal": null}, {"day": 16, "kcal": null}, {"day": 17, "kcal": null}, {"day": 18, "kcal": null}, {"day": 19, "kcal": null}, {"day": 20, "kcal": null}, {"day": 21, "kcal": null}, {"day": 22, "kcal": null}, {"day": 23, "kcal": null}, {"day": 24, "kcal": null}, {"day": 25, "kcal": null}, {"day": 26, "kcal": null}, {"day": 27, "kcal": null}, {"day": 28, "kcal": null}, {"day": 29, "kcal": null}, {"day": 30, "kcal": null}, {"day": 31, "kcal": null}]}]}, "todays_macros": {"date": "2026-04-07", "macros": [{"label": "Calories", "value": 0, "display": "0", "target": 2500, "unit": ""}, {"label": "Protein", "value": 0, "display": "0g", "target": 144, "unit": "g"}, {"label": "Fat", "value": 0, "display": "0g", "target": 78, "unit": "g"}, {"label": "Carbs", "value": 0, "display": "0g", "target": 295, "unit": "g"}], "protein_per_kg": {"value": 0.0, "target": 1.6, "body_weight_kg": 90}}, "todays_meals": {"date": "2026-04-07", "meals": [], "totals": {"kcal": 0, "protein": 0, "fat": 0, "carbs": 0}}, "meal_timing": {"period": "2026-04", "slots": [{"label": "Morning", "time_range": "6\u201311am", "avg_kcal": 262, "avg_protein_g": 8}, {"label": "Midday", "time_range": "11am\u20133pm", "avg_kcal": 560, "avg_protein_g": 27}, {"label": "Evening", "time_range": "3\u201310pm", "avg_kcal": 1812, "avg_protein_g": 99}], "insight": "Protein spread across day \u2014 evening accounts for 74%"}, "macro_comp": {"prev_month": {"label": "March", "period": "2026-03", "protein_pct": 19, "fat_pct": 48, "carbs_pct": 33, "avg_kcal": 2708, "avg_kcal_display": "2,708"}, "this_month": {"label": "April", "period": "2026-04", "protein_pct": 21, "fat_pct": 38, "carbs_pct": 41, "avg_kcal": 2634, "avg_kcal_display": "2,634"}, "insight": "Protein up 2% from March \u2014 fat down 10%, carbs up 8%."}, "monthly_insights": {"generated_at": null, "log_count": 0, "period_display": "", "insights": [{"icon": "\ud83d\udea7", "text": "Coming soon \u2014 not implemented yet"}]}}};
+// ── END GENERATED DATA ──
+const CFG = DATA.config || {
+  body_weight_kg: 90,
+  calories_target: 2500,
+  protein_target_g: 144,
+  fat_target_g: 78,
+  carbs_target_g: 295,
+  protein_per_kg_target: 1.6,
+  heatmap: { fasting_max: 0, low_max: 2000, normal_max: 2500, elevated_max: 3000 },
+  timeline_start_hour: 6,
+  timeline_end_hour: 22,
+};
+const W = (DATA.widgets || {});
+
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.body.classList.toggle('light', !isDark);
+  document.getElementById('theme-btn').innerHTML = isDark ? '☀︎ <span style="font-size:10px">Light</span>' : '☽ <span style="font-size:10px">Dark</span>';
+}
+
+const $ = id => document.getElementById(id);
+function pct(v, t) { return Math.min(100, Math.round(v / t * 100)); }
+function bar(p, color) { return `<div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${color}"></div></div>`; }
+
+// ── SUMMARY CARDS ──
+function renderSummary() {
+  const sc = W.summary_cards || {};
+  const cards = sc.cards || [];
+  $('summary-cards').innerHTML = cards.map(c => `
+    <div class="summary-card">
+      <div class="summary-label">${c.label}</div>
+      <div><span class="summary-value">${c.display}</span><span class="summary-unit">${c.unit}</span></div>
+      <div class="summary-trend ${c.trend_up ? 'trend-up' : 'trend-down'}">${c.delta_display || '—'} vs prev month</div>
+    </div>`).join('');
+}
+
+// ── HEATMAP ──
+function renderHeatmap() {
+  const H = CFG.heatmap || {};
+  const hm = W.yearly_heatmap || {};
+  const months = hm.months || [];
+  const getColor = kcal => {
+    if (kcal <= (H.fasting_max||0)) return '#7c3aed';
+    if (kcal < (H.low_max||2000)) return '#22c55e';
+    if (kcal < (H.normal_max||2500)) return '#86efac';
+    if (kcal < (H.elevated_max||3000)) return '#facc15';
+    return '#f97316';
+  };
+  const cs = 14, gap = 2, mono = "font-family:'DM Mono',monospace";
+  let html = `<div style="display:flex;align-items:flex-end;margin-bottom:4px"><div style="width:32px;flex-shrink:0"></div><div style="display:flex;gap:${gap}px">`;
+  for (let d = 1; d <= 31; d++) {
+    const show = d % 5 === 0 || d === 1;
+    html += `<div style="width:${cs}px;text-align:center;font-size:7px;${mono};color:${show?'var(--dim)':'transparent'}">${d}</div>`;
+  }
+  html += `</div><div style="width:110px;flex-shrink:0;padding-left:12px;font-size:8px;${mono};color:var(--dim);font-weight:600">MONTHLY</div></div>`;
+  months.forEach(m => {
+    html += `<div style="display:flex;align-items:center;margin-bottom:${gap}px">`;
+    html += `<div style="width:32px;flex-shrink:0;font-size:10px;${mono};color:${m.has_data?'var(--text)':'var(--muted)'};font-weight:600">${m.name}</div>`;
+    html += `<div style="display:flex;gap:${gap}px">`;
+    m.days.forEach(day => {
+      if (day.kcal === null) html += `<div style="width:${cs}px;height:${cs}px;border-radius:2px;background:var(--border)"></div>`;
+      else {
+        const t = `${m.name} ${day.day}: ${day.kcal===0?'Fasting':day.kcal+' kcal'}`;
+        html += `<div title="${t}" style="width:${cs}px;height:${cs}px;border-radius:2px;background:${getColor(day.kcal)};cursor:default"></div>`;
+      }
+    });
+    html += '</div><div style="flex-shrink:0;padding-left:12px;display:flex;gap:10px;align-items:center">';
+    if (m.has_data) {
+      html += `<span style="font-size:10px;${mono};color:var(--bright);font-weight:600;width:36px;text-align:right">${m.avg_kcal.toLocaleString()}</span>`;
+      html += `<span style="font-size:8px;${mono};color:var(--muted);width:22px">avg</span>`;
+      if (m.fasting_days > 0) html += `<span style="font-size:8px;${mono};color:#7c3aed">${m.fasting_days}f</span>`;
+      if (m.over_3000_days > 0) html += `<span style="font-size:8px;${mono};color:#f97316">${m.over_3000_days}↑</span>`;
+    }
+    html += '</div></div>';
+  });
+  const labels = [{bg:'var(--border)',l:'No data'},{bg:'#7c3aed',l:'Fasting'},{bg:'#22c55e',l:`<${(H.low_max||2000)/1000}k`},{bg:'#86efac',l:`${(H.low_max||2000)/1000}–${(H.normal_max||2500)/1000}k`},{bg:'#facc15',l:`${(H.normal_max||2500)/1000}–${(H.elevated_max||3000)/1000}k`},{bg:'#f97316',l:`${(H.elevated_max||3000)/1000}k+`}];
+  html += `<div style="display:flex;align-items:center;gap:10px;margin-top:10px;padding-left:32px;flex-wrap:wrap"><span style="font-size:8px;${mono};color:var(--dim)">Less</span>`;
+  labels.forEach(x => html += `<div style="display:flex;align-items:center;gap:3px"><div style="width:10px;height:10px;border-radius:2px;background:${x.bg}"></div><span style="font-size:8px;${mono};color:var(--dim)">${x.l}</span></div>`);
+  html += `<span style="font-size:8px;${mono};color:var(--dim)">More</span></div>`;
+  $('heatmap').innerHTML = html;
+}
+
+// ── TODAY'S MACROS ──
+function renderMacros() {
+  const tm = W.todays_macros || {};
+  const macros = tm.macros || [];
+  const colors = ['#2dd4bf','#60a5fa','#fbbf24','#4ade80'];
+  const ppkg = tm.protein_per_kg || {};
+  const ppkgVal = (ppkg.value || 0).toFixed(2);
+  const ppkgColor = ppkgVal < (ppkg.target || 1.6) ? '#fbbf24' : '#4ade80';
+  let html = '<div style="display:flex;gap:10px">';
+  macros.forEach((m, i) => {
+    const c = colors[i] || '#94a3b8';
+    html += `<div style="flex:1;text-align:center">
+      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:${c}">${m.display}</div>
+      <div style="font-size:9px;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:6px">${m.label}</div>
+      ${bar(pct(m.value, m.target), c)}
+      <div style="font-size:8px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px">/ ${(m.target||0).toLocaleString()}${m.unit}</div></div>`;
+  });
+  html += '</div>';
+  html += `<div style="margin-top:12px;padding:8px 10px;border-radius:8px;background:#60a5fa0a;border:1px solid #60a5fa18;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+    <span style="font-size:10px;color:var(--text)">Protein per kg body weight</span>
+    <div style="display:flex;align-items:baseline;gap:4px">
+      <span style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:${ppkgColor}">${ppkgVal}</span>
+      <span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--dim)">g/kg</span>
+      <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted)">/ ${ppkg.target || 1.6} target</span></div></div>`;
+  $('macros').innerHTML = html;
+}
+
+// ── TODAY'S LOG ──
+function renderLog() {
+  const tl = W.todays_meals || {};
+  const meals = tl.meals || [];
+  const totals = tl.totals || {};
+  const cols = 'grid-template-columns:44px 1fr 52px 36px 36px 36px';
+  const mono = "font-family:'DM Mono',monospace";
+  let html = `<div style="display:grid;${cols};gap:0 6px;font-size:9px;color:var(--dim);padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:2px;${mono}">
+    <span>TIME</span><span>DISH</span><span style="text-align:right">KCAL</span><span style="text-align:right">P</span><span style="text-align:right">F</span><span style="text-align:right">C</span></div>`;
+  meals.forEach((m,i) => {
+    const bb = i<meals.length-1 ? 'border-bottom:1px solid color-mix(in srgb, var(--border) 30%, transparent)' : '';
+    html += `<div style="display:grid;${cols};gap:0 6px;font-size:11px;padding:6px 0;${bb}">
+      <span style="color:var(--muted);${mono};font-size:10px">${m.time}</span>
+      <span style="color:var(--bright);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.dish}</span>
+      <span style="color:#2dd4bf;font-weight:600;text-align:right;${mono};font-size:10px">${m.kcal}</span>
+      <span style="color:#60a5fa;text-align:right;${mono};font-size:10px">${m.protein}g</span>
+      <span style="color:#fbbf24;text-align:right;${mono};font-size:10px">${m.fat}g</span>
+      <span style="color:#4ade80;text-align:right;${mono};font-size:10px">${m.carbs}g</span></div>`;
+  });
+  html += `<div style="display:grid;${cols};gap:0 6px;font-size:11px;padding:8px 0 0;border-top:1px solid var(--border);font-weight:700;margin-top:2px;${mono}">
+    <span></span><span style="color:var(--text)">Total</span>
+    <span style="color:#2dd4bf;text-align:right;font-size:10px">${(totals.kcal||0).toLocaleString()}</span>
+    <span style="color:#60a5fa;text-align:right;font-size:10px">${totals.protein||0}g</span>
+    <span style="color:#fbbf24;text-align:right;font-size:10px">${totals.fat||0}g</span>
+    <span style="color:#4ade80;text-align:right;font-size:10px">${totals.carbs||0}g</span></div>`;
+  $('todays-log').innerHTML = html;
+}
+
+// ── MEAL TIMING — monthly averages, horizontal stacked bars ──
+function renderMealTiming() {
+  const mt = W.meal_timing || {};
+  const slots = mt.slots || [];
+  const maxKcal = Math.max(...slots.map(s => s.avg_kcal), 1);
+  const mono = "font-family:'DM Mono',monospace";
+  let html = '';
+  slots.forEach(s => {
+    const totalW = (s.avg_kcal / maxKcal) * 100;
+    const proteinW = s.avg_kcal > 0 ? (s.avg_protein_g * 4 / s.avg_kcal) * totalW : 0;
+    const otherW = totalW - proteinW;
+    html += `<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px">
+        <span style="color:var(--bright)">${s.label} <span style="color:var(--muted);${mono};font-size:9px">${s.time_range}</span></span>
+        <span style="${mono};font-size:10px"><span style="color:#2dd4bf">${s.avg_kcal} kcal</span><span style="color:var(--muted)"> · </span><span style="color:#60a5fa">${s.avg_protein_g}g P</span></span>
+      </div>
+      <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--border)">
+        <div style="width:${proteinW}%;background:#60a5fa;border-radius:4px 0 0 4px"></div>
+        <div style="width:${otherW}%;background:#2dd4bf44"></div>
+      </div></div>`;
+  });
+  html += `<div style="display:flex;gap:14px;margin-top:4px;font-size:9px;${mono}">
+    <div style="display:flex;align-items:center;gap:3px"><div style="width:10px;height:10px;border-radius:2px;background:#60a5fa"></div><span style="color:var(--text)">Protein kcal</span></div>
+    <div style="display:flex;align-items:center;gap:3px"><div style="width:10px;height:10px;border-radius:2px;background:#2dd4bf44"></div><span style="color:var(--text)">Other kcal</span></div></div>`;
+  html += `<div style="font-size:9px;color:var(--muted);margin-top:8px;border-top:1px solid var(--border);padding-top:8px">${mt.insight || ''}</div>`;
+  $('meal-timing').innerHTML = html;
+}
+
+// ── MACRO COMPOSITION — prev month (left) → this month (right) ──
+function renderMacroComp() {
+  const mc = W.macro_comp || {};
+  const prev = mc.prev_month || {};
+  const curr = mc.this_month || {};
+  function donut(data, cx, cy, r) {
+    const p = data.protein_pct || 0, f = data.fat_pct || 0, c = data.carbs_pct || 0;
+    const total = p + f + c || 1;
+    const pA = (p/total)*360, fA = (f/total)*360;
+    const arc = (s,e) => {
+      const sr=(s-90)*Math.PI/180, er=(e-90)*Math.PI/180, lg=e-s>180?1:0;
+      return `M${cx+r*Math.cos(sr)} ${cy+r*Math.sin(sr)} A${r} ${r} 0 ${lg} 1 ${cx+r*Math.cos(er)} ${cy+r*Math.sin(er)}`;
+    };
+    return `<path d="${arc(0,pA)}" fill="none" stroke="#60a5fa" stroke-width="8" stroke-linecap="round"/>
+      <path d="${arc(pA+3,pA+fA)}" fill="none" stroke="#fbbf24" stroke-width="8" stroke-linecap="round"/>
+      <path d="${arc(pA+fA+3,357)}" fill="none" stroke="#4ade80" stroke-width="8" stroke-linecap="round"/>
+      <text x="${cx}" y="${cy-4}" text-anchor="middle" fill="var(--bright)" font-size="11" font-family="Sora,sans-serif" font-weight="700" dominant-baseline="middle">${data.label||''}</text>
+      <text x="${cx}" y="${cy+10}" text-anchor="middle" fill="var(--muted)" font-size="8" font-family="DM Mono,monospace" dominant-baseline="middle">${data.avg_kcal_display||'—'} kcal</text>`;
+  }
+  let html = `<svg viewBox="0 0 240 100" style="width:100%;height:120px">`;
+  html += donut(prev, 60, 50, 38);
+  html += donut(curr, 180, 50, 38);
+  html += `<text x="120" y="50" text-anchor="middle" fill="var(--muted)" font-size="14" dominant-baseline="middle">→</text></svg>`;
+  html += '<div style="display:flex;justify-content:space-between;margin-top:4px">';
+  [prev, curr].forEach(m => {
+    html += `<div style="flex:1;text-align:center;font-size:9px;font-family:'DM Mono',monospace">
+      <span style="color:#60a5fa">P ${m.protein_pct||'—'}%</span> <span style="color:var(--muted)">·</span>
+      <span style="color:#fbbf24">F ${m.fat_pct||'—'}%</span> <span style="color:var(--muted)">·</span>
+      <span style="color:#4ade80">C ${m.carbs_pct||'—'}%</span></div>`;
+  });
+  html += '</div>';
+  html += `<div style="margin-top:8px;font-size:9px;color:var(--muted);text-align:center;border-top:1px solid var(--border);padding-top:8px">${mc.insight||''}</div>`;
+  $('macro-comp').innerHTML = html;
+}
+
+// ── INSIGHTS ──
+function renderInsights() {
+  const mi = W.monthly_insights || {};
+  const insights = mi.insights || [];
+  let html = '';
+  if (mi.generated_at) {
+    html += `<div style="font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.5">Generated by Veda on ${new Date(mi.generated_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})} from analysis of ${mi.log_count||0} daily logs (${mi.period_display||''})</div>`;
+  }
+  insights.forEach((ins,i) => {
+    const bt = i > 0 ? 'border-top:1px solid color-mix(in srgb, var(--border) 50%, transparent);' : '';
+    html += `<div class="insight-row" style="${bt}"><span style="font-size:14px;flex-shrink:0;line-height:1.4">${ins.icon}</span>
+      <div style="font-size:11px;color:var(--text);line-height:1.7">${ins.text}</div></div>`;
+  });
+  $('insights').innerHTML = html;
+}
+
+// ── UPDATED AGO ──
+function renderUpdatedAgo() {
+  if (!DATA.generated_at) return;
+  const gen = new Date(DATA.generated_at);
+  const diff = Math.round((Date.now() - gen.getTime()) / 60000);
+  const label = diff < 1 ? 'just now' : diff < 60 ? `${diff} min ago` : `${Math.round(diff/60)}h ago`;
+  const el = $('updated-ago');
+  if (el) el.textContent = `Updated ${label}`;
+}
+
+renderSummary();
+renderHeatmap();
+renderMacros();
+renderLog();
+renderMealTiming();
+renderMacroComp();
+renderInsights();
+renderUpdatedAgo();
+</script>
+</body>
+</html>

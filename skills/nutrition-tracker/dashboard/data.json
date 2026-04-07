@@ -1,0 +1,1795 @@
+{
+  "skill_id": "nutrition",
+  "generated_at": "2026-04-07T06:04:35Z",
+  "data_range": {
+    "first_log": "2026-03-01",
+    "last_log": "2026-04-06",
+    "total_days_logged": 36
+  },
+  "config": {
+    "body_weight_kg": 90,
+    "calories_target": 2500,
+    "protein_target_g": 144,
+    "fat_target_g": 78,
+    "carbs_target_g": 295,
+    "protein_per_kg_target": 1.6,
+    "macro_split_target": {
+      "protein": 25,
+      "fat": 28,
+      "carbs": 47
+    },
+    "heatmap": {
+      "fasting_max": 0,
+      "low_max": 2000,
+      "normal_max": 2500,
+      "elevated_max": 3000
+    },
+    "meal_timing": {
+      "timeline_start": 6,
+      "timeline_end": 22,
+      "morning_end": 11,
+      "midday_end": 15
+    }
+  },
+  "widgets": {
+    "summary_cards": {
+      "period": "2026-04",
+      "prev_period": "2026-03",
+      "cards": [
+        {
+          "label": "Avg Daily Calories",
+          "value": 2634,
+          "display": "2,634",
+          "unit": "kcal",
+          "delta_pct": -2.8,
+          "delta_display": "\u22122.8%",
+          "trend_up": false
+        },
+        {
+          "label": "Avg Protein",
+          "value": 134,
+          "display": "134",
+          "unit": "g/day",
+          "delta_pct": 11.4,
+          "delta_display": "+11.4%",
+          "trend_up": true
+        },
+        {
+          "label": "Avg Fat",
+          "value": 107,
+          "display": "107",
+          "unit": "g/day",
+          "delta_pct": -18.3,
+          "delta_display": "\u221218.3%",
+          "trend_up": false
+        },
+        {
+          "label": "Avg Carbs",
+          "value": 266,
+          "display": "266",
+          "unit": "g/day",
+          "delta_pct": 29.9,
+          "delta_display": "+29.9%",
+          "trend_up": true
+        }
+      ]
+    },
+    "yearly_heatmap": {
+      "year": 2026,
+      "months": [
+        {
+          "name": "Jan",
+          "days_in_month": 31,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Feb",
+          "days_in_month": 28,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Mar",
+          "days_in_month": 31,
+          "has_data": true,
+          "avg_kcal": 2708,
+          "fasting_days": 1,
+          "over_3000_days": 7,
+          "days": [
+            {
+              "day": 1,
+              "kcal": 2780
+            },
+            {
+              "day": 2,
+              "kcal": 2903
+            },
+            {
+              "day": 3,
+              "kcal": 2786
+            },
+            {
+              "day": 4,
+              "kcal": 2454
+            },
+            {
+              "day": 5,
+              "kcal": 2563
+            },
+            {
+              "day": 6,
+              "kcal": 2214
+            },
+            {
+              "day": 7,
+              "kcal": 2373
+            },
+            {
+              "day": 8,
+              "kcal": 2476
+            },
+            {
+              "day": 9,
+              "kcal": 3039
+            },
+            {
+              "day": 10,
+              "kcal": 2256
+            },
+            {
+              "day": 11,
+              "kcal": 2901
+            },
+            {
+              "day": 12,
+              "kcal": 2848
+            },
+            {
+              "day": 13,
+              "kcal": 2847
+            },
+            {
+              "day": 14,
+              "kcal": 2982
+            },
+            {
+              "day": 15,
+              "kcal": 3481
+            },
+            {
+              "day": 16,
+              "kcal": 3205
+            },
+            {
+              "day": 17,
+              "kcal": 3500
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": 2915
+            },
+            {
+              "day": 20,
+              "kcal": 2853
+            },
+            {
+              "day": 21,
+              "kcal": 3755
+            },
+            {
+              "day": 22,
+              "kcal": 2008
+            },
+            {
+              "day": 23,
+              "kcal": 2804
+            },
+            {
+              "day": 24,
+              "kcal": 2869
+            },
+            {
+              "day": 25,
+              "kcal": 3081
+            },
+            {
+              "day": 26,
+              "kcal": 2985
+            },
+            {
+              "day": 27,
+              "kcal": 2261
+            },
+            {
+              "day": 28,
+              "kcal": 3421
+            },
+            {
+              "day": 29,
+              "kcal": 0
+            },
+            {
+              "day": 30,
+              "kcal": 2255
+            },
+            {
+              "day": 31,
+              "kcal": 2436
+            }
+          ]
+        },
+        {
+          "name": "Apr",
+          "days_in_month": 30,
+          "has_data": true,
+          "avg_kcal": 2634,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": 2754
+            },
+            {
+              "day": 2,
+              "kcal": 2601
+            },
+            {
+              "day": 3,
+              "kcal": 2590
+            },
+            {
+              "day": 4,
+              "kcal": 2993
+            },
+            {
+              "day": 5,
+              "kcal": 2712
+            },
+            {
+              "day": 6,
+              "kcal": 2151
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "May",
+          "days_in_month": 31,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Jun",
+          "days_in_month": 30,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Jul",
+          "days_in_month": 31,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Aug",
+          "days_in_month": 31,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Sep",
+          "days_in_month": 30,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Oct",
+          "days_in_month": 31,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Nov",
+          "days_in_month": 30,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        },
+        {
+          "name": "Dec",
+          "days_in_month": 31,
+          "has_data": false,
+          "avg_kcal": 0,
+          "fasting_days": 0,
+          "over_3000_days": 0,
+          "days": [
+            {
+              "day": 1,
+              "kcal": null
+            },
+            {
+              "day": 2,
+              "kcal": null
+            },
+            {
+              "day": 3,
+              "kcal": null
+            },
+            {
+              "day": 4,
+              "kcal": null
+            },
+            {
+              "day": 5,
+              "kcal": null
+            },
+            {
+              "day": 6,
+              "kcal": null
+            },
+            {
+              "day": 7,
+              "kcal": null
+            },
+            {
+              "day": 8,
+              "kcal": null
+            },
+            {
+              "day": 9,
+              "kcal": null
+            },
+            {
+              "day": 10,
+              "kcal": null
+            },
+            {
+              "day": 11,
+              "kcal": null
+            },
+            {
+              "day": 12,
+              "kcal": null
+            },
+            {
+              "day": 13,
+              "kcal": null
+            },
+            {
+              "day": 14,
+              "kcal": null
+            },
+            {
+              "day": 15,
+              "kcal": null
+            },
+            {
+              "day": 16,
+              "kcal": null
+            },
+            {
+              "day": 17,
+              "kcal": null
+            },
+            {
+              "day": 18,
+              "kcal": null
+            },
+            {
+              "day": 19,
+              "kcal": null
+            },
+            {
+              "day": 20,
+              "kcal": null
+            },
+            {
+              "day": 21,
+              "kcal": null
+            },
+            {
+              "day": 22,
+              "kcal": null
+            },
+            {
+              "day": 23,
+              "kcal": null
+            },
+            {
+              "day": 24,
+              "kcal": null
+            },
+            {
+              "day": 25,
+              "kcal": null
+            },
+            {
+              "day": 26,
+              "kcal": null
+            },
+            {
+              "day": 27,
+              "kcal": null
+            },
+            {
+              "day": 28,
+              "kcal": null
+            },
+            {
+              "day": 29,
+              "kcal": null
+            },
+            {
+              "day": 30,
+              "kcal": null
+            },
+            {
+              "day": 31,
+              "kcal": null
+            }
+          ]
+        }
+      ]
+    },
+    "todays_macros": {
+      "date": "2026-04-07",
+      "macros": [
+        {
+          "label": "Calories",
+          "value": 0,
+          "display": "0",
+          "target": 2500,
+          "unit": ""
+        },
+        {
+          "label": "Protein",
+          "value": 0,
+          "display": "0g",
+          "target": 144,
+          "unit": "g"
+        },
+        {
+          "label": "Fat",
+          "value": 0,
+          "display": "0g",
+          "target": 78,
+          "unit": "g"
+        },
+        {
+          "label": "Carbs",
+          "value": 0,
+          "display": "0g",
+          "target": 295,
+          "unit": "g"
+        }
+      ],
+      "protein_per_kg": {
+        "value": 0.0,
+        "target": 1.6,
+        "body_weight_kg": 90
+      }
+    },
+    "todays_meals": {
+      "date": "2026-04-07",
+      "meals": [],
+      "totals": {
+        "kcal": 0,
+        "protein": 0,
+        "fat": 0,
+        "carbs": 0
+      }
+    },
+    "meal_timing": {
+      "period": "2026-04",
+      "slots": [
+        {
+          "label": "Morning",
+          "time_range": "6\u201311am",
+          "avg_kcal": 262,
+          "avg_protein_g": 8
+        },
+        {
+          "label": "Midday",
+          "time_range": "11am\u20133pm",
+          "avg_kcal": 560,
+          "avg_protein_g": 27
+        },
+        {
+          "label": "Evening",
+          "time_range": "3\u201310pm",
+          "avg_kcal": 1812,
+          "avg_protein_g": 99
+        }
+      ],
+      "insight": "Protein spread across day \u2014 evening accounts for 74%"
+    },
+    "macro_comp": {
+      "prev_month": {
+        "label": "March",
+        "period": "2026-03",
+        "protein_pct": 19,
+        "fat_pct": 48,
+        "carbs_pct": 33,
+        "avg_kcal": 2708,
+        "avg_kcal_display": "2,708"
+      },
+      "this_month": {
+        "label": "April",
+        "period": "2026-04",
+        "protein_pct": 21,
+        "fat_pct": 38,
+        "carbs_pct": 41,
+        "avg_kcal": 2634,
+        "avg_kcal_display": "2,634"
+      },
+      "insight": "Protein up 2% from March \u2014 fat down 10%, carbs up 8%."
+    },
+    "monthly_insights": {
+      "generated_at": null,
+      "log_count": 0,
+      "period_display": "",
+      "insights": [
+        {
+          "icon": "\ud83d\udea7",
+          "text": "Coming soon \u2014 not implemented yet"
+        }
+      ]
+    }
+  }
+}

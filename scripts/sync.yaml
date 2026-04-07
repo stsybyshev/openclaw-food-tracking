@@ -1,0 +1,9 @@
+# Quantified Life — Cloud Sync Configuration
+# Used by sync.sh to push generated dashboard files to cloud storage.
+# Adding a new provider (OneDrive, Dropbox, Box) = just configure another rclone remote.
+
+provider: rclone
+remote: gdrive
+remote_path: "Quantified Self"
+files:
+  - ~/.openclaw/workspace/food-tracker/dashboard/quantified-life.html
