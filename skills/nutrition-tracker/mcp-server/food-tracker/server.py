@@ -5,6 +5,7 @@ Wraps personal-foods.yaml and popular-foods.yaml behind two tools:
   - add_personal_food: append-only write to personal-foods.yaml
 """
 
+import logging
 import os
 
 from mcp.server.fastmcp import FastMCP
@@ -27,6 +28,16 @@ FOOD_LOG_DIR = os.environ.get(
     os.path.expanduser("~/.openclaw/workspace/food-tracker"),
 )
 
+# --- Logging ---
+_log_path = os.path.join(FOOD_LOG_DIR, "mcp-server.log")
+logging.basicConfig(
+    filename=_log_path,
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+)
+logger = logging.getLogger("food-tracker-mcp")
+
 mcp = FastMCP(
     "food-cache",
     instructions="Food cache lookup and management. Use lookup_food to find nutrition info for foods. Use add_personal_food to save new foods for future reuse.",
@@ -43,7 +54,14 @@ def lookup_food(query: str) -> list[dict]:
     Args:
         query: Food name to search for (e.g. "omelette", "cortado", "salmon")
     """
-    return search_foods(query, PERSONAL_FOODS_PATH, POPULAR_FOODS_PATH)
+    logger.info("tool=lookup_food query=%r", query)
+    try:
+        result = search_foods(query, PERSONAL_FOODS_PATH, POPULAR_FOODS_PATH)
+        logger.info("tool=lookup_food query=%r hits=%d", query, len(result))
+        return result
+    except Exception as e:
+        logger.error("tool=lookup_food query=%r error=%s", query, e)
+        raise
 
 
 @mcp.tool()
@@ -86,7 +104,14 @@ def add_personal_food(
         "carbs_per_unit": carbs_per_unit,
         "notes": notes,
     }
-    return append_personal_food(entry, PERSONAL_FOODS_PATH)
+    logger.info("tool=add_personal_food name=%r unit=%r", name, unit)
+    try:
+        result = append_personal_food(entry, PERSONAL_FOODS_PATH)
+        logger.info("tool=add_personal_food name=%r result=%s", name, result.get("status", result))
+        return result
+    except Exception as e:
+        logger.error("tool=add_personal_food name=%r error=%s", name, e)
+        raise
 
 
 @mcp.tool()
@@ -119,19 +144,26 @@ def log_food(
         source: One of: cache_lookup, text_estimate, photo_estimate, photo_label
         confidence: Float 0-1 (cache_lookup=0.95, text_estimate=0.4-0.7, photo_estimate=0.3-0.5)
     """
-    return log_food_entry(
-        dt_str=datetime,
-        food=food,
-        qty=qty,
-        unit=unit,
-        protein_per_unit=protein_per_unit,
-        fat_per_unit=fat_per_unit,
-        carbs_per_unit=carbs_per_unit,
-        kcal_per_unit=kcal_per_unit,
-        source=source,
-        confidence=confidence,
-        log_dir=FOOD_LOG_DIR,
-    )
+    logger.info("tool=log_food datetime=%r food=%r qty=%s unit=%r source=%r", datetime, food, qty, unit, source)
+    try:
+        result = log_food_entry(
+            dt_str=datetime,
+            food=food,
+            qty=qty,
+            unit=unit,
+            protein_per_unit=protein_per_unit,
+            fat_per_unit=fat_per_unit,
+            carbs_per_unit=carbs_per_unit,
+            kcal_per_unit=kcal_per_unit,
+            source=source,
+            confidence=confidence,
+            log_dir=FOOD_LOG_DIR,
+        )
+        logger.info("tool=log_food food=%r result=%s", food, result.get("status", result))
+        return result
+    except Exception as e:
+        logger.error("tool=log_food food=%r error=%s", food, e)
+        raise
 
 
 @mcp.tool()
@@ -143,8 +175,16 @@ def get_todays_totals(date: str) -> dict:
     Args:
         date: Date to query in DD-MM-YYYY format (e.g. "04-04-2026")
     """
-    return get_daily_totals(date_str=date, log_dir=FOOD_LOG_DIR)
+    logger.info("tool=get_todays_totals date=%r", date)
+    try:
+        result = get_daily_totals(date_str=date, log_dir=FOOD_LOG_DIR)
+        logger.info("tool=get_todays_totals date=%r entries=%s", date, result.get("entry_count", "?"))
+        return result
+    except Exception as e:
+        logger.error("tool=get_todays_totals date=%r error=%s", date, e)
+        raise
 
 
 if __name__ == "__main__":
+    logger.info("MCP server started, FOOD_LOG_DIR=%s", FOOD_LOG_DIR)
     mcp.run()

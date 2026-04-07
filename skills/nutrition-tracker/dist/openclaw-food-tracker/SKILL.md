@@ -228,3 +228,11 @@ If the user says "I'm fasting today", "fasting day", "water fast", or similar â†
 - **Append-only:** The log is append-only. Corrections are new entries via `log_food`.
 - **One shot:** This skill may run in a subagent without conversation history. Produce a complete result (log entry + response) from a single user message.
 - **No external APIs:** Resolve from cache or estimate from general knowledge. Do not call external nutrition APIs.
+
+## If MCP tools are unavailable
+
+If you attempt to call a food-cache tool and receive an error, the tool is missing from your available tools, or the call times out:
+
+1. Do NOT attempt to log food by any other means â€” no file writes, no exec, no Python code, no workarounds.
+2. Do NOT fabricate a success message or pretend the food was logged.
+3. Respond to the user: "I couldn't reach the food logging service right now. Please try again in a moment."
