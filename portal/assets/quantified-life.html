@@ -48,6 +48,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--b
   .header { padding: 12px 14px; }
   .content { padding: 14px 12px; }
   .summary-value { font-size: 22px; }
+  .heatmap-stats { display: none !important; }
 }
 </style>
 </head>
@@ -92,7 +93,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--b
 
   <!-- ROW 2: HEATMAP -->
   <div class="card full" style="margin-bottom:14px">
-    <div class="card-header"><span class="card-title">Daily Calorie Heatmap — 2026</span><span class="card-badge">chart</span></div>
+    <div class="card-header"><span class="card-title">Year At A Glance — 2026</span><span class="card-badge">chart</span></div>
     <div id="heatmap"></div>
   </div>
 
@@ -181,13 +182,14 @@ function renderHeatmap() {
     if (kcal < (H.elevated_max||3000)) return '#facc15';
     return '#f97316';
   };
-  const cs = 14, gap = 2, mono = "font-family:'DM Mono',monospace";
+  const mobile = window.innerWidth <= 640;
+  const cs = mobile ? 9 : 14, gap = mobile ? 1 : 2, mono = "font-family:'DM Mono',monospace";
   let html = `<div style="display:flex;align-items:flex-end;margin-bottom:4px"><div style="width:32px;flex-shrink:0"></div><div style="display:flex;gap:${gap}px">`;
   for (let d = 1; d <= 31; d++) {
     const show = d % 5 === 0 || d === 1;
     html += `<div style="width:${cs}px;text-align:center;font-size:7px;${mono};color:${show?'var(--dim)':'transparent'}">${d}</div>`;
   }
-  html += `</div><div style="width:110px;flex-shrink:0;padding-left:12px;font-size:8px;${mono};color:var(--dim);font-weight:600">MONTHLY</div></div>`;
+  html += `</div><div class="heatmap-stats" style="width:110px;flex-shrink:0;padding-left:12px;font-size:8px;${mono};color:var(--dim);font-weight:600">MONTHLY</div></div>`;
   months.forEach(m => {
     html += `<div style="display:flex;align-items:center;margin-bottom:${gap}px">`;
     html += `<div style="width:32px;flex-shrink:0;font-size:10px;${mono};color:${m.has_data?'var(--text)':'var(--muted)'};font-weight:600">${m.name}</div>`;
@@ -199,7 +201,7 @@ function renderHeatmap() {
         html += `<div title="${t}" style="width:${cs}px;height:${cs}px;border-radius:2px;background:${getColor(day.kcal)};cursor:default"></div>`;
       }
     });
-    html += '</div><div style="flex-shrink:0;padding-left:12px;display:flex;gap:10px;align-items:center">';
+    html += '</div><div class="heatmap-stats" style="flex-shrink:0;padding-left:12px;display:flex;gap:10px;align-items:center">';
     if (m.has_data) {
       html += `<span style="font-size:10px;${mono};color:var(--bright);font-weight:600;width:36px;text-align:right">${m.avg_kcal.toLocaleString()}</span>`;
       html += `<span style="font-size:8px;${mono};color:var(--muted);width:22px">avg</span>`;

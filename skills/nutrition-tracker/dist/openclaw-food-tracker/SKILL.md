@@ -57,7 +57,7 @@ For each food item mentioned in the user message:
    - Proceed to Step 3
 3. If no match found (empty result):
    - Estimate nutrition from your general knowledge
-   - If you know the per-100g values (common for packaged foods), use `unit` = `100g` and set `qty` to portions of 100g consumed. This avoids division and keeps per-unit columns human-readable.
+   - **CRITICAL — unit rule for weight-based foods:** If the user specifies grams (e.g. "300g kefir"), ALWAYS use `unit` = `100g` and set `qty` = grams ÷ 100. NEVER use `unit` = `g` with per-100g rates — that multiplies the rate by the raw gram count and produces values 100× too high. Example: 300g kefir at 57 kcal/100g → `qty=3, unit="100g", kcal_per_unit=57` → 171 kcal total.
    - Set `source` = `text_estimate`
    - Set `confidence` between `0.4` and `0.7` based on how common/well-known the food is
    - Proceed to Step 3
